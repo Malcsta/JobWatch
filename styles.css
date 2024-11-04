@@ -1,0 +1,199 @@
+body {
+    background-color: #302f2f;
+}
+
+.title {
+    font-family: Helvetica Neue,Helvetica,Arial,sans-serif; 
+    font-weight: bold;
+    font-size: 36px;
+    text-align: center;
+    padding-top: 20px;
+    margin-top: 20px;
+}
+
+#nav {
+    margin-top: 20px;
+    margin-bottom: 50px;
+}
+
+#logo {
+    height: 170px;
+    display: block;
+    margin: 0 auto;
+}
+
+#search {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: row;  
+    font-family: Helvetica Neue,Helvetica,Arial,sans-serif; 
+}
+
+#searchinput {
+    height: 23px;
+    width: 300px;
+}
+
+#searchlabel {
+    font-size: 20px;
+}
+
+.btn {
+    appearance: none;
+    background-color:  #407cc0;
+    border: 1px solid rgba(27, 31, 35, .15);
+    border-radius: 6px;
+    box-shadow: rgba(27, 31, 35, .1) 0 1px 0;
+    box-sizing: border-box;
+    color: #fff;
+    cursor: pointer;
+    display: inline-block;
+    font-family: -apple-system,system-ui,"Segoe UI",Helvetica,Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji";
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 15px;
+    padding: 6px 16px;
+    position: relative;
+    text-align: center;
+    text-decoration: none;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;
+    vertical-align: middle;
+    white-space: nowrap;
+    
+}
+
+form {
+    display: flex;         
+    align-items: center;    
+}
+
+form label {
+    margin-right: 10px;  
+    color: white;
+}
+
+form input {
+    margin-right: 10px; 
+    border-radius: 3px;
+}
+
+#nav ul {
+    display: flex;
+    justify-content: center;
+    text-decoration: none;
+    padding: 0;
+    margin: 0;
+}
+
+#nav li {
+    display: inline-block;
+
+    align-items: center;
+    padding-left: 170px;
+    padding-right: 170px;
+    color: white;
+    text-decoration: none;
+    font-family: Helvetica Neue,Helvetica,Arial,sans-serif; 
+    font-size: 18px;
+}
+
+#JobWatch {
+    height: 70px;
+    text-align: center;
+    font-family: Helvetica Neue,Helvetica,Arial,sans-serif; 
+    color: white;
+    font-size: 64px;
+    margin: 10px;
+}
+
+.green-text {
+    color:  #407cc0;
+}
+
+#future {
+    color: white;
+    text-align: center;
+    font-family: Helvetica Neue,Helvetica,Arial,sans-serif; 
+    margin: 5px;
+    margin-bottom: 50px;
+}
+
+#main-container {
+    margin: auto;
+    border-radius: 5px;
+    width: 1000px;
+    height: auto;
+}
+
+#news, #listings, #resources {
+    background-color: white;
+    border-radius: 5px;
+}
+
+#postListing {
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    margin: auto;
+    justify-content: center;
+}
+
+.listing_container {
+    font-family: Helvetica Neue,Helvetica,Arial,sans-serif;
+    padding: 10px;
+    margin: 10px;
+    border-radius: 5px;
+    border: 1px solid #a1a1a1;
+    box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
+}
+
+#listings {
+    padding-bottom: 5px;
+}
+
+#postListing button {
+    width: auto;
+    text-align: center;
+    font-size: 22px;
+    height: 50px;
+    background-color: #407cc0;
+}
+
+.updated {
+    font-family: Helvetica Neue,Helvetica,Arial,sans-serif; 
+    text-align: center;
+    margin-top: 5px;
+    padding-bottom: 20px;
+    font-style: italic;
+}
+
+.listing_container h3 {
+    margin-top: 5px;
+}
+
+.listing_container a {
+    text-decoration: none;
+}
+
+.listing_container p {
+    margin-top: 3px;
+    margin-bottom: 0px;
+}
+
+#malcolm {
+    color: #407cc0;
+}
+
+.aboutdiv {
+    text-align: center;
+    color: white;
+    font-family: Helvetica Neue,Helvetica,Arial,sans-serif; 
+}
+
+.aboutdiv a {
+    color: white; /* Ensure links are also white */
+    text-decoration: underline; /* Optional: underline the link for visibility */
+}
