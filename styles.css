@@ -22,6 +22,7 @@ body {
 .title-status-container {
     display: flex;
     align-items: center;
+    height: 50px;
 }
 
 .status {
@@ -49,6 +50,19 @@ body {
 
 .status-closed {
     background-color: #da5555;
+}
+
+#locationimg {
+    width: 20px;
+    margin-top: 3px;
+}
+
+.company {
+    font-size: 24px;
+}
+
+.location {
+    font-size: 20px;
 }
 
 #logo {
@@ -123,17 +137,24 @@ form input {
     margin: 0;
 }
 
+#username {
+    color: #25ad62;
+    text-transform: uppercase;
+    cursor: pointer;
+
+}
+
 #nav li {
     display: inline-block;
     align-items: center;
-    padding-left: 170px;
-    padding-right: 170px;
+    padding-left: 130px;
+    padding-right: 130px;
     color: white;
     text-decoration: none;
     font-family: Helvetica Neue,Helvetica,Arial,sans-serif; 
     font-size: 18px;
+    white-space: nowrap;
 }
-
 
 .headerlink {
     text-decoration: none;
@@ -255,7 +276,7 @@ form input {
     font-size: 16px;
 }
 
-#signup_container {
+#signup_container, #signin_container {
     display: flex;
     flex-direction: column;
     text-align: center;
@@ -277,5 +298,4 @@ form input {
     font-size: 28px; 
     margin: 10px auto; 
     font-family: Helvetica Neue,Helvetica,Arial,sans-serif; 
-
 }

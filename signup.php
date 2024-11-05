@@ -1,6 +1,7 @@
 <?php
 
 session_start();
+
 require('connect.php');
 
 $message = ""; // Empty error message 
@@ -8,8 +9,8 @@ $message = ""; // Empty error message
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['signup'])) {
     $username = $_POST['username'];
+    $password = password_hash($_POST['password'], PASSWORD_BCRYPT);
     $email = $_POST['email'];
-    $password = password_hash($_POST['password'], PASSWORD_BCRYPT); // Secure password
 
     // Check if username or email already exists
     $stmt = $db->prepare("SELECT * FROM users WHERE username = ? OR email = ?");
@@ -20,8 +21,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['signup'])) {
         $message = "<p id='signerror'>Username or email already taken!</p>"; // Error message
     } else {
         // Insert a new user
-        $stmt = $db->prepare("INSERT INTO users (username, password, email, role_id, is_blocked) VALUES (?, ?, ?, 1, 1)");
-        if ($stmt->execute([$username, $email, $password])) {
+        $stmt = $db->prepare("INSERT INTO users (username, password, email, role_id, is_blocked) VALUES (?, ?, ?, 1, 0)");
+        if ($stmt->execute([$username, $password, $email])) {
             $_SESSION['signup_success'] = "Sign-up successful! You can now sign in."; // Set session message
             header("Location: index.php"); // Redirect to index.php
             exit(); // Prevent further code execution

@@ -3,11 +3,18 @@
 session_start();
 require('connect.php');
 
-$query = "SELECT job_id, user_id, title, company, description, posted_date, location, status, category FROM jobs ORDER BY posted_date DESC LIMIT 10";
+$query = "
+    SELECT jobs.job_id, jobs.title, jobs.company, jobs.description, jobs.posted_date, 
+           jobs.location, jobs.status, jobs.category, users.username
+    FROM jobs
+    JOIN users ON jobs.user_id = users.user_id
+    ORDER BY jobs.posted_date DESC
+    LIMIT 10
+";
 $statement = $db->prepare($query);
 $statement->execute();
 
-$postings = $statement->fetchAll();
+$postings = $statement->fetchAll(PDO::FETCH_ASSOC);
 
 $lastUpdatedQuery = "SELECT MAX(posted_date) AS last_updated FROM jobs";
 $lastUpdatedStatement = $db->prepare($lastUpdatedQuery);
@@ -20,6 +27,7 @@ if ($lastUpdatedDate) {
 } else {
     $formattedLastUpdatedDate = 'No postings available';
 }
+
 ?>
 
 <!DOCTYPE html>
@@ -34,12 +42,37 @@ if ($lastUpdatedDate) {
 <body>
     <div id="main-header">
         <div id=nav>
-            <ul>
-                <li><a class="headerlink" href="index.php">HOME</a></li>
-                <li><a class="headerlink" href="login.php">LOGIN</a></li>
-                <li><a class="headerlink" href="signup.php">SIGN-UP</a></li>
-                <li><a class="headerlink" href="about.php">ABOUT</a></li>
-            </ul>
+            <?php if (isset($_SESSION['username'])): ?>
+                <ul>
+                    <li>
+                        <span class="headerlink">WELCOME, <span id="username"><?php echo htmlspecialchars($_SESSION['username']); ?></span></span>
+                    </li>
+                    <li>
+                        <a class="headerlink" href="myaccount.php">MY LISTINGS</a>   
+                    </li>
+                    <li>
+                        <a class="headerlink" href="myaccount.php">NEW LISTING</a>
+                    </li>
+                    <li>
+                        <a class="headerlink" href="logout.php">SIGN-OUT</a>
+                    </li>
+                </ul>
+            <?php else: ?>
+                <ul>
+                    <li>
+                        <a class="headerlink" href="index.php">HOME</a></li>
+                    </li>
+                    <li>
+                        <a class="headerlink" href="login.php">LOGIN</a>
+                    </li>
+                    <li>
+                        <a class="headerlink" href="signup.php">SIGN-UP</a>
+                    </li>
+                    <li>
+                        <a class="headerlink" href="about.php">ABOUT</a></li>
+                    </li>
+                </ul>
+            <?php endif; ?>
         </div>
         <img id="logo"src="images/logo.png">
         <h3 id="future">Find your future.</h3>
@@ -67,8 +100,8 @@ if ($lastUpdatedDate) {
                         <p id="statustext"><?= htmlspecialchars_decode($post['status']) ?></p>
                     </div>
                 </div>
-                <p><?= htmlspecialchars_decode($post['company']) ?></p>
-                <p><?= htmlspecialchars_decode($post['location']) ?></p>
+                <p class="company"><?= htmlspecialchars_decode($post['company']) ?></p>
+                <p class="location"><?= htmlspecialchars_decode($post['location']) ?> <img id="locationimg" src="images/mapicon.png"></p>
                 <p>Category: <?= htmlspecialchars_decode($post['category']) ?></p>
                 <?php
                     if (strlen($post['description']) > 200) {
@@ -78,7 +111,7 @@ if ($lastUpdatedDate) {
                         echo '<p class="content">' . nl2br(htmlspecialchars_decode($post['description'])) . '</p>';
                     }
                 ?>
-                <p class="timestamp">Posted on <?= htmlspecialchars_decode(date('F j, Y, g:i A', strtotime($post['posted_date']))) ?></p>
+                <p class="timestamp">Posted by <?= htmlspecialchars($post['username']) ?> on <?= htmlspecialchars_decode(date('F j, Y, g:i A', strtotime($post['posted_date']))) ?></p>
             </div>
         <?php endforeach; ?>
         </div>

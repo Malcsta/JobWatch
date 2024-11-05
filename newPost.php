@@ -6,6 +6,7 @@
     Description: This file contains the logic that is used to create a new job listing.
 ****************/
 
+session_start();
 require('connect.php');
 
 date_default_timezone_set('America/Winnipeg');
@@ -18,7 +19,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $url         = filter_input(INPUT_POST, 'url', FILTER_SANITIZE_URL); // Sanitize URL input
     $status      = "New"; 
     $category    = filter_input(INPUT_POST, 'category', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
-    $user_id     = 1; 
+    $user_id     = $_SESSION['user_id']; 
 
     if ($title && $description && $location && $url && $category) {
         $posted_date = date('Y-m-d H:i:s'); 
