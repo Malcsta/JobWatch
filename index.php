@@ -2,7 +2,7 @@
 
 require('connect.php');
 
-$query = "SELECT job_id, user_id, title, description, posted_date, location, status, category FROM jobs ORDER BY posted_date DESC LIMIT 10";
+$query = "SELECT job_id, user_id, title, company, description, posted_date, location, status, category FROM jobs ORDER BY posted_date DESC LIMIT 10";
 $statement = $db->prepare($query);
 $statement->execute();
 
@@ -35,10 +35,10 @@ if ($lastUpdatedDate) {
     <div id="main-header">
         <div id=nav>
             <ul>
-                <li>HOME</li>
-                <li>LOGIN</li>
-                <li>SIGN-UP</li>
-                <li>ABOUT</li>
+                <li><a href="index.php">HOME</a></li>
+                <li><a href="login.php">LOGIN</a></li>
+                <li><a href="signup.php">SIGN-UP</a></li>
+                <li><a href="about.php">ABOUT</a></li>
             </ul>
         </div>
         <img id="logo"src="images/logo.png">
@@ -57,21 +57,27 @@ if ($lastUpdatedDate) {
             <p class="updated">Last updated: <?= htmlspecialchars($formattedLastUpdatedDate) ?></p>
             <?php foreach ($postings as $post): ?>
             <div class="listing_container">
-                <a href="posting.php?id=<?= $post['job_id'] ?>"><h3><?= htmlspecialchars_decode($post['title']) ?></h3></a>
-                <div class="status">
-                     <?= htmlspecialchars_decode($post['status']) ?>
+                <div class="title-status-container">
+                    <a href="posting.php?id=<?= $post['job_id'] ?>"><h3><?= htmlspecialchars_decode($post['title']) ?></h3></a>
+                    <div class="status 
+                        <?= $post['status'] === 'New' ? 'status-new' : '' ?>
+                        <?= $post['status'] === 'Active' ? 'status-active' : '' ?>
+                        <?= $post['status'] === 'Old' ? 'status-old' : '' ?>
+                        <?= $post['status'] === 'Closed' ? 'status-closed' : '' ?>">
+                        <?= htmlspecialchars_decode($post['status']) ?>
+                    </div>
                 </div>
+                <p><?= htmlspecialchars_decode($post['company']) ?></p>
                 <p><?= htmlspecialchars_decode($post['location']) ?></p>
                 <p>Category: <?= htmlspecialchars_decode($post['category']) ?></p>
                 <?php
                     if (strlen($post['description']) > 200) {
                         $truncated_content = substr($post['description'], 0, 200) . '... ';
-                        echo '<p class="content">' . nl2br(htmlspecialchars_decode($truncated_content)) . '<a href="post.php?id=' . $blogPost['id'] . '">Read full post</a></p>';
+                        echo '<p class="content">' . nl2br(htmlspecialchars_decode($truncated_content)) . '<a href="post.php?id=' . $post['job_id'] . '">Read full post</a></p>';
                     } else {
                         echo '<p class="content">' . nl2br(htmlspecialchars_decode($post['description'])) . '</p>';
                     }
                 ?>
-
                 <p class="timestamp">Posted on <?= htmlspecialchars_decode(date('F j, Y, g:i A', strtotime($post['posted_date']))) ?></p>
             </div>
         <?php endforeach; ?>

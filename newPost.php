@@ -12,22 +12,24 @@ date_default_timezone_set('America/Winnipeg');
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $title       = filter_input(INPUT_POST, 'title', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+    $company     = filter_input(INPUT_POST, 'company', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
     $description = filter_input(INPUT_POST, 'description', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
     $location    = filter_input(INPUT_POST, 'location', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
     $url         = filter_input(INPUT_POST, 'url', FILTER_SANITIZE_URL); // Sanitize URL input
     $status      = "New"; 
     $category    = filter_input(INPUT_POST, 'category', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
-    $user_id     = 1; // Assuming user_id is provided; adjust as necessary
+    $user_id     = 1; 
 
     if ($title && $description && $location && $url && $category) {
         $posted_date = date('Y-m-d H:i:s'); 
 
-        $query = "INSERT INTO jobs (user_id, title, description, posted_date, location, status, category, url) 
-                  VALUES (:user_id, :title, :description, :posted_date, :location, :status, :category, :url)";
+        $query = "INSERT INTO jobs (user_id, title, company, description, posted_date, location, status, category, url) 
+                  VALUES (:user_id, :title, :company, :description, :posted_date, :location, :status, :category, :url)";
         $statement = $db->prepare($query);
 
         $statement->bindValue(':user_id', $user_id);
         $statement->bindValue(':title', $title);
+        $statement->bindValue(':company', $company);
         $statement->bindValue(':description', $description);
         $statement->bindValue(':posted_date', $posted_date);
         $statement->bindValue(':location', $location);
@@ -64,6 +66,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <form action="newPost.php" method="POST">
             <label for="title">Title:</label>
             <input type="text" id="title" name="title" required><br>
+
+            <label for="title">Company:</label>
+            <input type="text" id="company" name="company" required><br>
 
             <label for="description">Description:</label><br>
             <textarea id="description" name="description" rows="4" required></textarea><br>

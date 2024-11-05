@@ -7,13 +7,58 @@ body {
     font-weight: bold;
     font-size: 36px;
     text-align: center;
-    padding-top: 20px;
-    margin-top: 20px;
+    margin-top: 30px;
+    padding-top: 10px;
+    margin-bottom: 10px;
 }
 
 #nav {
     margin-top: 20px;
     margin-bottom: 50px;
+}
+
+.title-status-container {
+    display: flex;
+    align-items: center;
+}
+
+.status-new {
+    background-color: #25ad62;
+    color: #ffffff;
+    padding: 3px;
+    height: 23px;
+    text-align: center;
+    margin-bottom: 22px;
+    margin-left: 10px;
+    font-size: 20px;
+    font-weight: bold;
+    border-radius: 5px;
+}
+
+.status-active {
+    background-color: #17b3da;
+    color: #ffffff;
+    padding: 3px;
+    height: 23px;
+    text-align: center;
+    margin-bottom: 22px;
+    margin-left: 10px;
+    font-size: 20px;
+    font-weight: bold;
+    border-radius: 5px;
+}
+
+.status-old {
+    background-color: #caa21e;
+    color: #ffffff;
+    padding: 3px;
+    height: 23px;
+    text-align: center;
+    margin-bottom: 22px;
+    margin-left: 10px;
+    font-size: 20px;
+    font-weight: bold;
+    border-radius: 5px;
 }
 
 #logo {
@@ -62,7 +107,6 @@ body {
     touch-action: manipulation;
     vertical-align: middle;
     white-space: nowrap;
-    
 }
 
 form {
@@ -98,6 +142,11 @@ form input {
     text-decoration: none;
     font-family: Helvetica Neue,Helvetica,Arial,sans-serif; 
     font-size: 18px;
+}
+
+#nav li a {
+    text-decoration: none;
+    color: white;
 }
 
 #JobWatch {
@@ -172,6 +221,7 @@ form input {
 
 .listing_container h3 {
     margin-top: 5px;
+    font-size: 28px;
 }
 
 .listing_container a {
