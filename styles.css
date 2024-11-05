@@ -1,5 +1,7 @@
 body {
     background-color: #302f2f;
+    margin: auto;
+    overflow-y: scroll; /* Forces vertical scrollbar to always be visible */
 }
 
 .title {
@@ -22,49 +24,38 @@ body {
     align-items: center;
 }
 
-.status-new {
-    background-color: #25ad62;
-    color: #ffffff;
+.status {
     padding: 3px;
-    height: 23px;
     text-align: center;
     margin-bottom: 22px;
     margin-left: 10px;
     font-size: 20px;
     font-weight: bold;
     border-radius: 5px;
+    color: #ffffff; /* Common color */
+}
+
+.status-new {
+    background-color: #25ad62;
 }
 
 .status-active {
     background-color: #17b3da;
-    color: #ffffff;
-    padding: 3px;
-    height: 23px;
-    text-align: center;
-    margin-bottom: 22px;
-    margin-left: 10px;
-    font-size: 20px;
-    font-weight: bold;
-    border-radius: 5px;
 }
 
 .status-old {
     background-color: #caa21e;
-    color: #ffffff;
-    padding: 3px;
-    height: 23px;
-    text-align: center;
-    margin-bottom: 22px;
-    margin-left: 10px;
-    font-size: 20px;
-    font-weight: bold;
-    border-radius: 5px;
+}
+
+.status-closed {
+    background-color: #da5555;
 }
 
 #logo {
     height: 170px;
     display: block;
     margin: 0 auto;
+    padding-bottom: 25px;
 }
 
 #search {
@@ -134,7 +125,6 @@ form input {
 
 #nav li {
     display: inline-block;
-
     align-items: center;
     padding-left: 170px;
     padding-right: 170px;
@@ -144,9 +134,14 @@ form input {
     font-size: 18px;
 }
 
-#nav li a {
+
+.headerlink {
     text-decoration: none;
     color: white;
+}
+
+.headerlink:hover {
+    text-decoration: underline; 
 }
 
 #JobWatch {
@@ -173,7 +168,7 @@ form input {
 #main-container {
     margin: auto;
     border-radius: 5px;
-    width: 1000px;
+    width: 1200px;
     height: auto;
 }
 
@@ -246,4 +241,41 @@ form input {
 .aboutdiv a {
     color: white; /* Ensure links are also white */
     text-decoration: underline; /* Optional: underline the link for visibility */
+}
+
+#signup_title {
+    text-align: center;
+    margin: auto;
+    color: #ffffff;
+    font-family: Helvetica Neue,Helvetica,Arial,sans-serif; 
+    margin: 20px;
+}
+
+.signup {
+    font-size: 16px;
+}
+
+#signup_container {
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    margin: auto;
+    align-items: center;
+    text-align: center; 
+    margin-bottom: 30px;
+}
+
+#signupbtn {
+    margin: auto;
+    display: flex;
+}
+
+#signerror {
+    display: flex;
+    justify-content: center; 
+    color: #da5555;
+    font-size: 28px; 
+    margin: 10px auto; 
+    font-family: Helvetica Neue,Helvetica,Arial,sans-serif; 
+
 }

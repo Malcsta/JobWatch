@@ -1,5 +1,6 @@
 <?php
 
+session_start();
 require('connect.php');
 
 $query = "SELECT job_id, user_id, title, company, description, posted_date, location, status, category FROM jobs ORDER BY posted_date DESC LIMIT 10";
@@ -19,8 +20,6 @@ if ($lastUpdatedDate) {
 } else {
     $formattedLastUpdatedDate = 'No postings available';
 }
-
-
 ?>
 
 <!DOCTYPE html>
@@ -29,16 +28,17 @@ if ($lastUpdatedDate) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="styles.css">
+    <link rel="icon" href="images/icon.png">
     <title>JobWatch</title>
 </head>
 <body>
     <div id="main-header">
         <div id=nav>
             <ul>
-                <li><a href="index.php">HOME</a></li>
-                <li><a href="login.php">LOGIN</a></li>
-                <li><a href="signup.php">SIGN-UP</a></li>
-                <li><a href="about.php">ABOUT</a></li>
+                <li><a class="headerlink" href="index.php">HOME</a></li>
+                <li><a class="headerlink" href="login.php">LOGIN</a></li>
+                <li><a class="headerlink" href="signup.php">SIGN-UP</a></li>
+                <li><a class="headerlink" href="about.php">ABOUT</a></li>
             </ul>
         </div>
         <img id="logo"src="images/logo.png">
@@ -64,7 +64,7 @@ if ($lastUpdatedDate) {
                         <?= $post['status'] === 'Active' ? 'status-active' : '' ?>
                         <?= $post['status'] === 'Old' ? 'status-old' : '' ?>
                         <?= $post['status'] === 'Closed' ? 'status-closed' : '' ?>">
-                        <?= htmlspecialchars_decode($post['status']) ?>
+                        <p id="statustext"><?= htmlspecialchars_decode($post['status']) ?></p>
                     </div>
                 </div>
                 <p><?= htmlspecialchars_decode($post['company']) ?></p>
