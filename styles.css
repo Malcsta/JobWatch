@@ -19,21 +19,35 @@ body {
     margin-bottom: 50px;
 }
 
+.title-status-container h3 {
+    margin-right: 10px;
+}
+
 .title-status-container {
     display: flex;
     align-items: center;
     height: 50px;
+    width: auto;
+    justify-content: space-between;
 }
 
 .status {
     padding: 3px;
     text-align: center;
     margin-bottom: 22px;
-    margin-left: 10px;
+    margin-right: auto;
     font-size: 20px;
     font-weight: bold;
     border-radius: 5px;
     color: #ffffff; /* Common color */
+}
+
+#comment {
+    width: 50px;
+    margin-bottom: 15px;
+    display: inline-block;
+    margin-right: 0;  
+    margin-top: 5px;
 }
 
 .status-new {

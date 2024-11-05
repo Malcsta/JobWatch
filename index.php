@@ -38,45 +38,10 @@ if ($lastUpdatedDate) {
     <link rel="stylesheet" href="styles.css">
     <link rel="icon" href="images/icon.png">
     <title>JobWatch</title>
+    <script src="scripts.js" defer></script>
 </head>
 <body>
-    <div id="main-header">
-        <div id=nav>
-            <?php if (isset($_SESSION['username'])): ?>
-                <ul>
-                    <li>
-                        <span class="headerlink">WELCOME, <span id="username"><?php echo htmlspecialchars($_SESSION['username']); ?></span></span>
-                    </li>
-                    <li>
-                        <a class="headerlink" href="myaccount.php">MY LISTINGS</a>   
-                    </li>
-                    <li>
-                        <a class="headerlink" href="myaccount.php">NEW LISTING</a>
-                    </li>
-                    <li>
-                        <a class="headerlink" href="logout.php">SIGN-OUT</a>
-                    </li>
-                </ul>
-            <?php else: ?>
-                <ul>
-                    <li>
-                        <a class="headerlink" href="index.php">HOME</a></li>
-                    </li>
-                    <li>
-                        <a class="headerlink" href="login.php">LOGIN</a>
-                    </li>
-                    <li>
-                        <a class="headerlink" href="signup.php">SIGN-UP</a>
-                    </li>
-                    <li>
-                        <a class="headerlink" href="about.php">ABOUT</a></li>
-                    </li>
-                </ul>
-            <?php endif; ?>
-        </div>
-        <img id="logo"src="images/logo.png">
-        <h3 id="future">Find your future.</h3>
-    </div>
+    <?php include 'header.php'; ?>
     <div id="search">
         <form method="POST" action="">
             <label id="searchlabel" for="search">Search job listings:</label>
@@ -99,6 +64,7 @@ if ($lastUpdatedDate) {
                         <?= $post['status'] === 'Closed' ? 'status-closed' : '' ?>">
                         <p id="statustext"><?= htmlspecialchars_decode($post['status']) ?></p>
                     </div>
+                    <a href="comment.php?job_id=<?= $post['job_id'] ?>"><img id="comment" src="images/chat.png" alt="Comment"></a>
                 </div>
                 <p class="company"><?= htmlspecialchars_decode($post['company']) ?></p>
                 <p class="location"><?= htmlspecialchars_decode($post['location']) ?> <img id="locationimg" src="images/mapicon.png"></p>
@@ -115,9 +81,11 @@ if ($lastUpdatedDate) {
             </div>
         <?php endforeach; ?>
         </div>
-        <div id ="postListing">
-            <button class="btn" onclick="window.location.href='newPost.php'">Post a new listing!</button>
-        </div>
+        <?php if (isset($_SESSION['username'])): ?>
+            <div id ="postListing">
+                <button class="btn" onclick="window.location.href='newPost.php'">Post a new listing!</button>
+            </div>
+        <?php endif; ?>
         <div id="news">
             <p class="title">News</p>
             <p class="updated">Last updated: filler</p>
