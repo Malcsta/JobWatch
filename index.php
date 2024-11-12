@@ -42,6 +42,13 @@ if ($lastUpdatedDate) {
 </head>
 <body>
     <?php include 'header.php'; ?>
+    <?php if (isset($_SESSION['welcome_message'])): ?>
+        <script>
+            // Display a dialog box when the sign-in is successful
+            alert("<?php echo $_SESSION['welcome_message']; ?>");
+        </script>
+        <?php unset($_SESSION['welcome_message']); // Unset the message after displaying ?>
+    <?php endif; ?>
     <div id="search">
         <form method="POST" action="">
             <label id="searchlabel" for="search">Search job listings:</label>

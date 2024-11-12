@@ -20,6 +20,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['signin'])) {
         $_SESSION['user_id'] = $user['user_id'];
         $_SESSION['username'] = $user['username'];
         $_SESSION['signin_success'] = "Welcome, " . htmlspecialchars($user['username']) . "!"; // Success message
+        $_SESSION['welcome_message'] = "Sign in successful!";
         header("Location: index.php"); // Redirect to the index page
         exit(); // Prevent further code execution
     } else {
@@ -34,21 +35,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['signin'])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="styles.css">
-    <title>Sign In</title>
+    <link rel="icon" href="images/icon.png">
+    <script src="scripts.js" defer></script>
+    <title>JobWatch</title>
 </head>
 <body>
-    <div id="main-header">
-        <div id="nav">
-            <ul>
-                <li><a class="headerlink" href="index.php">HOME</a></li>
-                <li><a class="headerlink" href="login.php">LOGIN</a></li>
-                <li><a class="headerlink" href="signup.php">SIGN-UP</a></li>
-                <li><a class="headerlink" href="about.php">ABOUT</a></li>
-            </ul>
-        </div>
-        <img id="logo" src="images/logo.png">
-        <h3 id="future">Sign in below:</h3>
-    </div>
+    <?php include 'header.php'; ?>
     <div id="signin_container">
         <form method="post" action="">
             <div class="input_container">

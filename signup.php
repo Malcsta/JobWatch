@@ -1,33 +1,38 @@
 <?php
-
 session_start();
-
 require('connect.php');
 
-$message = ""; // Empty error message 
-
+$message = ""; // Empty error message
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['signup'])) {
     $username = $_POST['username'];
-    $password = password_hash($_POST['password'], PASSWORD_BCRYPT);
     $email = $_POST['email'];
+    $password = $_POST['password'];
+    $confirmPassword = $_POST['confirm_password'];
 
-    // Check if username or email already exists
-    $stmt = $db->prepare("SELECT * FROM users WHERE username = ? OR email = ?");
-    $stmt->execute([$username, $email]); 
-    $result = $stmt->fetchAll(PDO::FETCH_ASSOC); // Fetch results from db
-
-    if (count($result) > 0) {
-        $message = "<p id='signerror'>Username or email already taken!</p>"; // Error message
+    // Check if passwords match
+    if ($password !== $confirmPassword) {
+        $message = "<p id='signerror'>Passwords do not match!</p>";
     } else {
-        // Insert a new user
-        $stmt = $db->prepare("INSERT INTO users (username, password, email, role_id, is_blocked) VALUES (?, ?, ?, 1, 0)");
-        if ($stmt->execute([$username, $password, $email])) {
-            $_SESSION['signup_success'] = "Sign-up successful! You can now sign in."; // Set session message
-            header("Location: index.php"); // Redirect to index.php
-            exit(); // Prevent further code execution
+        $hashedPassword = password_hash($password, PASSWORD_BCRYPT);
+
+        // Check if username or email already exists
+        $stmt = $db->prepare("SELECT * FROM users WHERE username = ? OR email = ?");
+        $stmt->execute([$username, $email]);
+        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        if (count($result) > 0) {
+            $message = "<p id='signerror'>Username or email already taken!</p>";
         } else {
-            $message = "<p id='signerror'>Error: " . htmlspecialchars($stmt->errorInfo()[2]) . "</p>"; // Display PDO error
+            // Insert new user
+            $stmt = $db->prepare("INSERT INTO users (username, password, email, role_id, is_blocked) VALUES (?, ?, ?, 1, 0)");
+            if ($stmt->execute([$username, $hashedPassword, $email])) {
+                $_SESSION['signup_success'] = "Sign-up successful! You can now sign in.";
+                header("Location: index.php");
+                exit();
+            } else {
+                $message = "<p id='signerror'>Error: " . htmlspecialchars($stmt->errorInfo()[2]) . "</p>";
+            }
         }
     }
 }
@@ -39,23 +44,15 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['signup'])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="styles.css">
-    <title>Sign Up</title>
+    <link rel="icon" href="images/icon.png">
+    <script src="scripts.js" defer></script>
+    <title>JobWatch</title>
 </head>
 <body>
-    <div id="main-header">
-        <div id=nav>
-            <ul>
-                <li><a class="headerlink" href="index.php">HOME</a></li>
-                <li><a class="headerlink" href="login.php">LOGIN</a></li>
-                <li><a class="headerlink" href="signup.php">SIGN-UP</a></li>
-                <li><a class="headerlink" href="about.php">ABOUT</a></li>
-            </ul>
-        </div>
-        <img id="logo"src="images/logo.png">
-        <h3 id="future">Sign up below:</h3>
-    </div>
+    <?php include 'header.php'; ?>
     <div id="signup_container">
-        <form method="post" action="">
+        <h2 id="info">Enter your information to get started:</h2>
+        <form method="post" action="" id="userinfo">
             <div class="input_container">
                 <input class="signup" type="text" name="username" placeholder="Username" required>
             </div>
@@ -64,6 +61,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['signup'])) {
             </div>
             <div class="input_container">
                 <input class="signup" type="password" name="password" placeholder="Password" required>           
+            </div>
+            <div class="input_container">
+                <input class="signup" type="password" name="confirm_password" placeholder="Confirm Password" required>           
             </div>
             <button id="signupbtn" type="submit" name="signup">Sign Up</button>
         </form>
