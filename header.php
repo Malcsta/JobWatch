@@ -11,9 +11,11 @@
                 <li>
                     <a class="headerlink" href="myaccount.php">NEW LISTING</a>
                 </li>
-                <li>
-                    <a class="headerlink" href="admincontrol.php">ADMIN SETTINGS</a>
-                </li>
+                <?php if ($_SESSION['role_id'] === 3): ?>
+                    <li>
+                        <a class="headerlink" href="admincontrol.php">ADMIN SETTINGS</a>
+                    </li>
+                <?php endif; ?>
                 <li>
                     <a class="headerlink" href="logout.php" onclick="return confirmSignOut()">SIGN-OUT</a>
                 </li>

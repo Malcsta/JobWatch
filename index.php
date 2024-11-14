@@ -63,7 +63,7 @@ if ($lastUpdatedDate) {
             <?php foreach ($postings as $post): ?>
             <div class="listing_container">
                 <div class="title-status-container">
-                    <a href="posting.php?id=<?= $post['job_id'] ?>"><h3><?= htmlspecialchars_decode($post['title']) ?></h3></a>
+                    <a href="fullpost.php?id=<?= $post['job_id'] ?>"><h3><?= htmlspecialchars_decode($post['title']) ?></h3></a>
                     <div class="status 
                         <?= $post['status'] === 'New' ? 'status-new' : '' ?>
                         <?= $post['status'] === 'Active' ? 'status-active' : '' ?>
