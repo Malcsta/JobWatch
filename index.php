@@ -28,6 +28,21 @@ if ($lastUpdatedDate) {
     $formattedLastUpdatedDate = 'No postings available';
 }
 
+// Query to get the number of comments for each job posting
+$commentsQuery = "
+    SELECT job_id, COUNT(*) AS comment_count
+    FROM comments
+    GROUP BY job_id
+";
+$commentsStatement = $db->prepare($commentsQuery);
+$commentsStatement->execute();
+$commentCounts = $commentsStatement->fetchAll(PDO::FETCH_ASSOC);
+
+// Create an associative array of job_id => comment_count for easy lookup
+$commentCountMap = [];
+foreach ($commentCounts as $comment) {
+    $commentCountMap[$comment['job_id']] = $comment['comment_count'];
+}
 ?>
 
 <!DOCTYPE html>
@@ -49,43 +64,13 @@ if ($lastUpdatedDate) {
         </script>
         <?php unset($_SESSION['welcome_message']); // Unset the message after displaying ?>
     <?php endif; ?>
-    <div id="search">
-        <form method="POST" action="">
-            <label id="searchlabel" for="search">Search job listings:</label>
-            <input type="text" id="searchinput" name="search" required>
-            <button class="btn" type="submit">Search</button>
-        </form>
-    </div>
+    <?php include 'search.php'; ?>
     <div id="main-container">
         <div id="listings">
             <p class="title">New Jobs in your area</p>
             <p class="updated">Last updated: <?= htmlspecialchars($formattedLastUpdatedDate) ?></p>
-            <?php foreach ($postings as $post): ?>
-            <div class="listing_container">
-                <div class="title-status-container">
-                    <a href="fullpost.php?id=<?= $post['job_id'] ?>"><h3><?= htmlspecialchars_decode($post['title']) ?></h3></a>
-                    <div class="status 
-                        <?= $post['status'] === 'New' ? 'status-new' : '' ?>
-                        <?= $post['status'] === 'Active' ? 'status-active' : '' ?>
-                        <?= $post['status'] === 'Old' ? 'status-old' : '' ?>
-                        <?= $post['status'] === 'Closed' ? 'status-closed' : '' ?>">
-                        <p id="statustext"><?= htmlspecialchars_decode($post['status']) ?></p>
-                    </div>
-                    <a href="comment.php?job_id=<?= $post['job_id'] ?>"><img id="comment" src="images/chat.png" alt="Comment"></a>
-                </div>
-                <p class="company"><?= htmlspecialchars_decode($post['company']) ?></p>
-                <p class="location"><?= htmlspecialchars_decode($post['location']) ?> <img id="locationimg" src="images/mapicon.png"></p>
-                <p>Category: <?= htmlspecialchars_decode($post['category']) ?></p>
-                <?php
-                    if (strlen($post['description']) > 200) {
-                        $truncated_content = substr($post['description'], 0, 200) . '... ';
-                        echo '<p class="content">' . nl2br(htmlspecialchars_decode($truncated_content)) . '<a href="post.php?id=' . $post['job_id'] . '">Read full post</a></p>';
-                    } else {
-                        echo '<p class="content">' . nl2br(htmlspecialchars_decode($post['description'])) . '</p>';
-                    }
-                ?>
-                <p class="timestamp">Posted by <?= htmlspecialchars($post['username']) ?> on <?= htmlspecialchars_decode(date('F j, Y, g:i A', strtotime($post['posted_date']))) ?></p>
-            </div>
+        <?php foreach ($postings as $post): ?>
+            <?php include 'listing.php'; ?>
         <?php endforeach; ?>
         </div>
         <?php if (isset($_SESSION['username'])): ?>

@@ -11,6 +11,7 @@ require('connect.php');
 
 date_default_timezone_set('America/Winnipeg');
 
+// sanitizing and preparing the inputs
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $title       = filter_input(INPUT_POST, 'title', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
     $company     = filter_input(INPUT_POST, 'company', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
@@ -28,6 +29,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                   VALUES (:user_id, :title, :company, :description, :posted_date, :location, :status, :category, :url)";
         $statement = $db->prepare($query);
 
+        // binding values
         $statement->bindValue(':user_id', $user_id);
         $statement->bindValue(':title', $title);
         $statement->bindValue(':company', $company);
@@ -59,6 +61,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <title>New Job Listing</title>
 </head>
 <body>
+    <?php include 'header.php'; ?>
     <div id="main_container">
         <h1>Submit a New Job Listing</h1>
         <?php if (isset($error)): ?>

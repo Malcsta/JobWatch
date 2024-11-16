@@ -81,20 +81,43 @@ body {
 }
 
 #individual_comment {
-    background-color: #2188cc;
+    background-color: #688DC9;
     margin: 5px;
     color: #ffffff;
     border-radius: 3px;
     padding: 10px;
+    position: relative;
+    margin-bottom: 25px;
+}
+
+#individual_comment::after {
+    content: "";
+    position: absolute;
+    bottom: -20px;
+    left: 15px;
+    width: 0;
+    height: 0;
+    border: 20px solid transparent;
+    border-right-color: #f0f0f0;
+    border-left: 0;
+    border-bottom: 0;
+    margin-top: -5px;
+    background-color: #688DC9;
 }
 
 #individual_comment p {
     font-size: 18px;
-    margin: 5px;
+    margin-top: 5px;
+    margin-bottom: 5px;
 }
 
 #comment_time {
     font-style: italic;
+}
+
+#delete_comment {
+    width: 8px;
+    height: 8px; 
 }
 
 input[type="submit"] {
@@ -143,6 +166,31 @@ input[type="submit"] {
     display: inline-block;
     margin-right: 0;  
     margin-top: 5px;
+}
+
+#comment_icon {
+    position: relative;
+    display: inline-block;
+}
+
+.comment-link {
+    display: inline-block;
+    position: relative;
+}
+
+.comment-number {
+    position: absolute;
+    top: 33%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: white; /* Choose a color that contrasts well with the image */
+    font-weight: bold;
+    font-size: 14px; /* Adjust the font size as needed */
+}
+
+
+#comment:hover {
+    scale: 110%;
 }
 
 .status-new {
@@ -317,6 +365,15 @@ form input {
     align-items: center;
     margin: auto;
     justify-content: center;
+}
+
+#no_results {
+    text-align: center;
+    font-size: 18px;
+    font-weight: bold;
+    color: #ff0000;  /* You can change this color */
+    margin-top: 20px;
+    font-family: Helvetica Neue,Helvetica,Arial,sans-serif;
 }
 
 .listing_container {

@@ -9,7 +9,7 @@
                     <a class="headerlink" href="myaccount.php">MY LISTINGS</a>   
                 </li>
                 <li>
-                    <a class="headerlink" href="myaccount.php">NEW LISTING</a>
+                    <a class="headerlink" href="newPost.php">NEW LISTING</a>
                 </li>
                 <?php if ($_SESSION['role_id'] === 3): ?>
                     <li>

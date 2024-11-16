@@ -2,7 +2,26 @@
 session_start();
 require('connect.php');
 
-// Check if job_id is set in the URL
+// Check if a comment deletion request is made
+if (isset($_SESSION['role_id']) && ($_SESSION['role_id'] == 2 || $_SESSION['role_id'] == 3) && isset($_GET['delete_comment_id']) && isset($_GET['id'])) {
+    $comment_id = $_GET['delete_comment_id'];
+    $job_id = $_GET['id'];
+
+    // Prepare and execute the delete query
+    $delete_query = "DELETE FROM comments WHERE comment_id = :comment_id";
+    $statement = $db->prepare($delete_query);
+    $statement->bindValue(':comment_id', $comment_id, PDO::PARAM_INT);
+    
+    if ($statement->execute()) {
+        // Redirect to the same page without the delete_comment_id parameter
+        header("Location: fullpost.php?id=" . $job_id);
+        exit;
+    } else {
+        echo "Error: Unable to delete the comment.";
+    }
+}
+
+// Check if job_id is set in the URL to display the job post
 if (isset($_GET['id'])) {
     $job_id = $_GET['id'];
 
@@ -21,14 +40,14 @@ if (isset($_GET['id'])) {
     // Fetch specific job posting
     $post = $statement->fetch(PDO::FETCH_ASSOC);
 
-    // If no post is found display errpr
+    // If no post is found display error
     if (!$post) {
         echo "This job posting does not exist.";
         exit;
     }
 
     $comments_query = "
-        SELECT comments.comment_text, comments.comment_date, users.username
+        SELECT comments.comment_id, comments.comment_text, comments.comment_date, users.username
         FROM comments
         JOIN users ON comments.user_id = users.user_id
         WHERE comments.job_id = :job_id
@@ -45,8 +64,6 @@ if (isset($_GET['id'])) {
     header("Location: index.php");
     exit;
 }
-
-
 ?>
 
 <!DOCTYPE html>
@@ -60,6 +77,7 @@ if (isset($_GET['id'])) {
 </head>
 <body>
     <?php include 'header.php'; ?>
+    <?php include 'search.php'; ?>
     <div id="main-container">
         <div class="listing_container">
             <div class="title-status-container">
@@ -71,7 +89,11 @@ if (isset($_GET['id'])) {
                     <?= $post['status'] === 'Closed' ? 'status-closed' : '' ?>">
                     <p id="statustext"><?= htmlspecialchars_decode($post['status']) ?></p>
                 </div>
-                <a href="comment.php?job_id=<?= $post['job_id'] ?>"><img id="comment" src="images/chat.png" alt="Comment"></a>
+                <div id="comment_icon">
+                    <a href="comment.php?job_id=<?= $post['job_id'] ?>" class="comment-link">
+                        <img id="comment" src="images/chat.png" alt="Comment">
+                    </a>
+                </div>
             </div>
             <p class="company"><?= htmlspecialchars_decode($post['company']) ?></p>
             <p class="location"><?= htmlspecialchars_decode($post['location']) ?> <img id="locationimg" src="images/mapicon.png"></p>
@@ -86,6 +108,11 @@ if (isset($_GET['id'])) {
                     <span id="user_line"><img id="user_icon" src="images/user.png"><p><?= htmlspecialchars_decode($comment['username'])?></p></span>
                     <p><?= htmlspecialchars_decode($comment['comment_text'])?></p>
                     <p id="comment_time">Posted on <?= htmlspecialchars_decode($comment['comment_date'])?></p>
+                    <?php if ($_SESSION['role_id'] == 2 || $_SESSION['role_id'] == 3): ?>
+                        <a href="fullpost.php?id=<?= $post['job_id'] ?>&delete_comment_id=<?= $comment['comment_id'] ?>" onclick="return confirm('Are you sure you want to delete this comment?');">
+                            <img src="images/delete.png" id="delete_comment" alt="Delete" style="cursor: pointer; width: 20px; height: 20px;">
+                        </a>
+                    <?php endif; ?>
                 </div>
             <?php endforeach; ?>
         </div>

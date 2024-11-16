@@ -42,7 +42,7 @@ function generateCaptcha() {
     imagedestroy($image);
 }
 
-// If the CAPTCHA is requested, generate and display it
+// If the CAPTCHA is requested, generate and display i
 if (isset($_GET['captcha']) && $_GET['captcha'] == 1) {
     generateCaptcha();
     exit; 
@@ -50,7 +50,7 @@ if (isset($_GET['captcha']) && $_GET['captcha'] == 1) {
 
 // Verify CAPTCHA and process the form with POST
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['comment_field'], $_POST['captcha_input'])) {
-    $comment_text = htmlspecialchars($_POST['comment_field']); // Retain user comment
+    $comment_text = htmlspecialchars_decode($_POST['comment_field']); // Retain user commedt
 
     if ($_POST['captcha_input'] !== $_SESSION['captcha']) {
         $captcha_error = "Incorrect CAPTCHA. Please try again."; // Set error message
