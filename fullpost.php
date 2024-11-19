@@ -2,6 +2,23 @@
 session_start();
 require('connect.php');
 
+if (isset($_SESSION['role_id']) && ($_SESSION['role_id'] == 2 || $_SESSION['role_id'] == 3) && isset($_GET['delete_post_id'])) {
+    $post_id = $_GET['delete_post_id'];
+
+    // Prepare the delete query
+    $delete_post_query = "DELETE FROM jobs WHERE job_id = :post_id";
+    $statement = $db->prepare($delete_post_query);
+    $statement->bindValue(':post_id', $post_id, PDO::PARAM_INT);
+
+    if ($statement->execute()) {
+        // Redirect to home page after successful deletion
+        header("Location: index.php");
+        exit;
+    } else {
+        echo "Error: Unable to delete the post.";
+    }
+}
+
 // Check if a comment deletion request is made
 if (isset($_SESSION['role_id']) && ($_SESSION['role_id'] == 2 || $_SESSION['role_id'] == 3) && isset($_GET['delete_comment_id']) && isset($_GET['id'])) {
     $comment_id = $_GET['delete_comment_id'];
@@ -79,29 +96,7 @@ if (isset($_GET['id'])) {
     <?php include 'header.php'; ?>
     <?php include 'search.php'; ?>
     <div id="main-container">
-        <div class="listing_container">
-            <div class="title-status-container">
-                <a href="fullpost.php?id=<?= $post['job_id'] ?>"><h3><?= htmlspecialchars_decode($post['title']) ?></h3></a>
-                <div class="status 
-                    <?= $post['status'] === 'New' ? 'status-new' : '' ?>
-                    <?= $post['status'] === 'Active' ? 'status-active' : '' ?>
-                    <?= $post['status'] === 'Old' ? 'status-old' : '' ?>
-                    <?= $post['status'] === 'Closed' ? 'status-closed' : '' ?>">
-                    <p id="statustext"><?= htmlspecialchars_decode($post['status']) ?></p>
-                </div>
-                <div id="comment_icon">
-                    <a href="comment.php?job_id=<?= $post['job_id'] ?>" class="comment-link">
-                        <img id="comment" src="images/chat.png" alt="Comment">
-                    </a>
-                </div>
-            </div>
-            <p class="company"><?= htmlspecialchars_decode($post['company']) ?></p>
-            <p class="location"><?= htmlspecialchars_decode($post['location']) ?> <img id="locationimg" src="images/mapicon.png"></p>
-            <p>Category: <?= htmlspecialchars_decode($post['category']) ?></p>
-            <p id="description"> <?= htmlspecialchars_decode($post['description']) ?></p>
-            <p class="timestamp">Posted by <?= htmlspecialchars($post['username']) ?> on <?= htmlspecialchars_decode(date('F j, Y, g:i A', strtotime($post['posted_date']))) ?></p>
-            <a id="post_url" href="<?= htmlspecialchars_decode($post['url']) ?>">Apply</a>
-        </div>
+        <?php include 'listing.php'; ?>
         <div id="comment_container">
             <?php foreach ($comments as $comment): ?>
                 <div id="individual_comment">

@@ -1,5 +1,5 @@
 body {
-    background-color: #302f2f;
+    background-color: #414141;
     margin: auto;
     overflow-y: scroll; 
     max-width: 100%;
@@ -405,6 +405,10 @@ form input {
     background-color: #1371af;
     padding: 5px;
     border-radius: 3px;
+}
+
+#post_title {
+    color: #407cc0;
 }
 
 .updated {
