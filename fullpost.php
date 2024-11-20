@@ -103,7 +103,7 @@ if (isset($_GET['id'])) {
                     <span id="user_line"><img id="user_icon" src="images/user.png"><p><?= htmlspecialchars_decode($comment['username'])?></p></span>
                     <p><?= htmlspecialchars_decode($comment['comment_text'])?></p>
                     <p id="comment_time">Posted on <?= htmlspecialchars_decode($comment['comment_date'])?></p>
-                    <?php if ($_SESSION['role_id'] == 2 || $_SESSION['role_id'] == 3): ?>
+                    <?php if (isset($_SESSION['role_id']) && ($_SESSION['role_id'] == 2 || $_SESSION['role_id'] == 3)): ?>
                         <a href="fullpost.php?id=<?= $post['job_id'] ?>&delete_comment_id=<?= $comment['comment_id'] ?>" onclick="return confirm('Are you sure you want to delete this comment?');">
                             <img src="images/delete.png" id="delete_comment" alt="Delete" style="cursor: pointer; width: 20px; height: 20px;">
                         </a>
