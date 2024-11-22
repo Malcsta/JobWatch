@@ -2,6 +2,12 @@
 session_start();
 require('connect.php');
 
+if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
+    // Redirect to login page or display an error message
+    header('Location: login.php');
+    exit();
+}
+
 // Get the job_id from URL
 $job_id = isset($_GET['job_id']) ? $_GET['job_id'] : 0;
 

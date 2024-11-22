@@ -11,6 +11,22 @@ $statement->execute();
 
 $users = $statement->fetchAll(PDO::FETCH_ASSOC);
 
+$posts_query = "
+    SELECT *
+    FROM jobs
+";
+
+$posts_statement = $db->prepare($posts_query);
+$posts_statement->execute();
+
+$jobs = $posts_statement->fetchAll(PDO::FETCH_ASSOC);
+
+if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
+    // Redirect to login page or display an error message
+    header('Location: login.php');
+    exit();
+}
+
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['signup'])) {
     $username = $_POST['username'];
     $email = $_POST['email'];
@@ -61,30 +77,29 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['signup'])) {
     <div id="users_list">
         <h1>All Users</h1>
         <table id="user_table">
-            <th>
-                <tr>
-                    <th>ID</th>
-                    <th>Username</th>
-                    <th>Role</th>
-                    <th>Email</th>
-                </tr>
+            <tr>
+                <th>ID</th>
+                <th>Username</th>
+                <th>Role</th>
+                <th>Email</th>
+            </tr>
             <?php foreach ($users as $user): ?>
-                <tr>
-                    <td><?= $user['user_id']?></td>
-                    <td><?= $user['username']?></td>
-                    <td><?= $user['role_id']?></td>
-                    <td><?= $user['email']?></td>
-                    <td class="useroptions">
-                    <form action="edit_user.php" method="GET" style="display:inline;">
-                        <input type="hidden" name="user_id" value="<?= htmlspecialchars($user['user_id']) ?>">
-                        <button type="submit">Edit</button>
-                    </form>
-                    <form action="delete_user.php" method="POST" onsubmit="return confirm('Are you sure you want to delete this user?');">
-                        <input type="hidden" name="user_id" value="<?= htmlspecialchars($user['user_id']) ?>">
-                        <button type="submit">Delete</button>
-                    </form>
-                    </td>
-                </tr>
+            <tr>
+                <td><?= $user['user_id']?></td>
+                <td><?= $user['username']?></td>
+                <td><?= $user['role_id']?></td>
+                <td><?= $user['email']?></td>
+                <td class="useroptions">
+                <form action="edit_user.php" method="GET" style="display:inline;">
+                    <input type="hidden" name="user_id" value="<?= htmlspecialchars($user['user_id']) ?>">
+                    <button type="submit">Edit</button>
+                </form>
+                <form action="delete_user.php" method="POST" onsubmit="return confirm('Are you sure you want to delete this user?');">
+                    <input type="hidden" name="user_id" value="<?= htmlspecialchars($user['user_id']) ?>">
+                    <button type="submit">Delete</button>
+                </form>
+                </td>
+            </tr>
             <?php endforeach;?>
         </table>
         <div id="signup_container">
@@ -106,6 +121,30 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['signup'])) {
         </form>
         <?php if (!empty($message)) echo $message; // Displaying the error message ?>
     </div>
-    <div>
+    <div id="allposts">
+        <h1>All Posts</h1>
+        <table id="posts_table">
+            <tr>
+                <th>ID</th>
+                <th>User ID</th>
+                <th>Title</th>
+                <th>Company</th>
+                <th>Date Posted</th>
+                <th>Status</th>
+                <th>Category</th>
+            </tr>
+            <?php foreach ($jobs as $job): ?>
+                <tr>
+                    <td><?=$job['job_id']?></td>
+                    <td><?=$job['user_id']?></td>
+                    <td><?=$job['title']?></td>
+                    <td><?=$job['company']?></td>
+                    <td><?=$job['posted_date']?></td>
+                    <td><?=$job['status']?></td>
+                    <td><?=$job['category']?></td>
+                <tr>
+            <?php endforeach;?>
+        </table>
+    </div>
 </body>
 </html>

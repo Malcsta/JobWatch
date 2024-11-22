@@ -2,6 +2,12 @@
 session_start();
 require('connect.php');
 
+if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
+    // Redirect to login page or display an error message
+    header('Location: login.php');
+    exit();
+}
+
 if (!isset($_GET['user_id'])) {
     header('Location: admincontrol.php');
     exit();

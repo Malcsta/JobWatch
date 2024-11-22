@@ -2,6 +2,12 @@
 session_start();
 require('connect.php');
 
+if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
+    // Redirect to login page or display an error message
+    header('Location: login.php');
+    exit();
+}
+
 // Check if the user is authorized to edit posts
 if (!isset($_SESSION['role_id']) || ($_SESSION['role_id'] != 2 && $_SESSION['role_id'] != 3)) {
     header("Location: index.php");
