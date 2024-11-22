@@ -604,6 +604,12 @@ form input {
     margin: auto;
     padding: 10px;
     text-align: center;
+    margin-bottom: 50px;
+}
+
+#users_list label {
+    color: #000000;
+    margin: 10px;
 }
 
 
@@ -615,4 +621,49 @@ form input {
 
 #user_table td {
     padding: 10px;
+}
+
+#cancel_edit {
+    margin: 5px;
+    padding: 10px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-group label {
+    color: #000000;
+}
+
+.form-actions {
+    text-align: center;
+    
+}
+
+#users_list a {
+    display: block;
+    margin-top: 1rem;
+    text-align: center;
+    color: #007bff;
+    text-decoration: none;
+}
+
+#edit_users_list {
+    font-family: Helvetica Neue,Helvetica,Arial,sans-serif; 
+    background-color: #f0f0f0;
+    width: max-content;
+    margin: auto;
+    padding: 10px;
+    text-align: center;
+}
+
+.useroptions {
+    display: flex;
+    gap: 10px;
+}
+
+.useroptions form {
+    margin: 0; 
 }

@@ -74,7 +74,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['signup'])) {
                     <td><?= $user['username']?></td>
                     <td><?= $user['role_id']?></td>
                     <td><?= $user['email']?></td>
-                    <td>
+                    <td class="useroptions">
+                    <form action="edit_user.php" method="GET" style="display:inline;">
+                        <input type="hidden" name="user_id" value="<?= htmlspecialchars($user['user_id']) ?>">
+                        <button type="submit">Edit</button>
+                    </form>
                     <form action="delete_user.php" method="POST" onsubmit="return confirm('Are you sure you want to delete this user?');">
                         <input type="hidden" name="user_id" value="<?= htmlspecialchars($user['user_id']) ?>">
                         <button type="submit">Delete</button>
