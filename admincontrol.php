@@ -11,15 +11,22 @@ $statement->execute();
 
 $users = $statement->fetchAll(PDO::FETCH_ASSOC);
 
-$posts_query = "
-    SELECT *
-    FROM jobs
-";
+// Fetch the sorting parameters from the URL, with defaults
+$sort_column = $_GET['column'] ?? 'title';
+$sort_order = $_GET['order'] ?? 'asc';
 
-$posts_statement = $db->prepare($posts_query);
-$posts_statement->execute();
+// Sanitize input to prevent SQL injection
+$valid_columns = ['title', 'posted_date', 'updated_at'];
+$sort_column = in_array($sort_column, $valid_columns) ? $sort_column : 'title';
+$sort_order = ($sort_order === 'desc') ? 'desc' : 'asc';
 
-$jobs = $posts_statement->fetchAll(PDO::FETCH_ASSOC);
+// Toggle the sort order for the next click
+$next_order = ($sort_order === 'asc') ? 'desc' : 'asc';
+
+// Fetch sorted data from the database
+$query = "SELECT job_id, user_id, title, company, posted_date, status, category FROM jobs 
+          ORDER BY $sort_column $sort_order";
+$jobs = $db->query($query)->fetchAll(PDO::FETCH_ASSOC);
 
 if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
     // Redirect to login page or display an error message
@@ -60,6 +67,36 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['signup'])) {
     }
 }
 
+// Determine which column the table is sorted by
+$sort_column = isset($_GET['column']) ? $_GET['column'] : null;
+$sort_order = isset($_GET['order']) ? $_GET['order'] : null;
+
+// Default message
+$sort_message = "Table is sorted by: ";
+
+switch ($sort_column) {
+    case 'title':
+        $sort_message .= "Title";
+        break;
+    case 'company':
+        $sort_message .= "Company";
+        break;
+    case 'posted_date':
+        $sort_message .= "Date Posted";
+        break;
+    case 'status':
+        $sort_message .= "Status";
+        break;
+    default:
+        $sort_message .= "Default Order";
+        break;
+}
+
+// Add the order if available
+if ($sort_order) {
+    $sort_message .= " in " . ($sort_order === 'asc' ? "Ascending" : "Descending") . " Order";
+}
+
 ?>
 
 <!DOCTYPE html>
@@ -70,11 +107,35 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['signup'])) {
     <link rel="stylesheet" href="styles.css">
     <link rel="icon" href="images/icon.png">
     <title>JobWatch Control Panel</title>
-    <script src="scripts.js" defer></script>
+    <script src="scripts.js"></script>
 </head>
 <body>
     <?php include 'header.php'; ?>
     <div id="users_list">
+    <div id="allposts">
+        <h1>All Posts</h1>
+        <p><?= $sort_message ?></p>
+        <table id="posts_table">
+            <tr>
+                <th><a class="sort" href="?column=title&order=<?=$next_order?>">Title</a></th>
+                <th>User ID</th>
+                <th><a class="sort" href="?column=company&order=<?=$next_order?>">Company</a></th>
+                <th><a class="sort" href="?column=posted_date&order=<?=$next_order?>">Date Posted</a></th>
+                <th><a class="sort" href="?column=status&order=<?=$next_order?>">Status</a></th>
+                <th>Category</th>
+            </tr>
+            <?php foreach ($jobs as $job): ?>
+                <tr>
+                    <td><?=$job['title']?></td>
+                    <td><?=$job['user_id']?></td>
+                    <td><?=$job['company']?></td>
+                    <td><?=$job['posted_date']?></td>
+                    <td><?=$job['status']?></td>
+                    <td><?=$job['category']?></td>
+                </tr>
+            <?php endforeach; ?>
+        </table>
+    </div>
         <h1>All Users</h1>
         <table id="user_table">
             <tr>
@@ -120,31 +181,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['signup'])) {
             <button id="signupbtn" type="submit" name="signup">New User</button>
         </form>
         <?php if (!empty($message)) echo $message; // Displaying the error message ?>
-    </div>
-    <div id="allposts">
-        <h1>All Posts</h1>
-        <table id="posts_table">
-            <tr>
-                <th>ID</th>
-                <th>User ID</th>
-                <th>Title</th>
-                <th>Company</th>
-                <th>Date Posted</th>
-                <th>Status</th>
-                <th>Category</th>
-            </tr>
-            <?php foreach ($jobs as $job): ?>
-                <tr>
-                    <td><?=$job['job_id']?></td>
-                    <td><?=$job['user_id']?></td>
-                    <td><?=$job['title']?></td>
-                    <td><?=$job['company']?></td>
-                    <td><?=$job['posted_date']?></td>
-                    <td><?=$job['status']?></td>
-                    <td><?=$job['category']?></td>
-                <tr>
-            <?php endforeach;?>
-        </table>
     </div>
 </body>
 </html>

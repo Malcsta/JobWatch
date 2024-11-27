@@ -1,50 +1,68 @@
 <?php
 
-/*******w******** 
-    Name: Malcolm White
-    Date: 2024-09-18
-    Description: This file contains the logic that is used to create a new job listing.
-****************/
-
 session_start();
 require('connect.php');
 
 date_default_timezone_set('America/Winnipeg');
 
-// sanitizing and preparing the inputs
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $title       = filter_input(INPUT_POST, 'title', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
     $company     = filter_input(INPUT_POST, 'company', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
     $description = filter_input(INPUT_POST, 'description', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
     $location    = filter_input(INPUT_POST, 'location', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
-    $url         = filter_input(INPUT_POST, 'url', FILTER_SANITIZE_URL); // Sanitize URL input
-    $status      = "New"; 
-    $category    = filter_input(INPUT_POST, 'category', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+    $url         = filter_input(INPUT_POST, 'url', FILTER_SANITIZE_URL);
+    $categoryName = filter_input(INPUT_POST, 'category', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
     $user_id     = $_SESSION['user_id']; 
 
-    if ($title && $description && $location && $url && $category) {
-        $posted_date = date('Y-m-d H:i:s'); 
+    if ($title && $description && $location && $url && $categoryName) {
+        try {
+            $db->beginTransaction();
 
-        $query = "INSERT INTO jobs (user_id, title, company, description, posted_date, location, status, category, url) 
-                  VALUES (:user_id, :title, :company, :description, :posted_date, :location, :status, :category, :url)";
-        $statement = $db->prepare($query);
+            // Check if the category exists
+            $categoryQuery = "SELECT category_id FROM categories WHERE category_name = :categoryName";
+            $categoryStmt = $db->prepare($categoryQuery);
+            $categoryStmt->bindValue(':categoryName', $categoryName);
+            $categoryStmt->execute();
+            $category = $categoryStmt->fetch(PDO::FETCH_ASSOC);
 
-        // binding values
-        $statement->bindValue(':user_id', $user_id);
-        $statement->bindValue(':title', $title);
-        $statement->bindValue(':company', $company);
-        $statement->bindValue(':description', $description);
-        $statement->bindValue(':posted_date', $posted_date);
-        $statement->bindValue(':location', $location);
-        $statement->bindValue(':status', $status);
-        $statement->bindValue(':category', $category);
-        $statement->bindValue(':url', $url); // Bind the URL
+            if ($category) {
+                // Use existing category ID
+                $category_id = $category['category_id'];
+            } else {
+                // Insert new category and get the ID
+                $insertCategoryQuery = "INSERT INTO categories (category_name) VALUES (:categoryName)";
+                $insertCategoryStmt = $db->prepare($insertCategoryQuery);
+                $insertCategoryStmt->bindValue(':categoryName', $categoryName);
+                $insertCategoryStmt->execute();
 
-        if ($statement->execute()) {
-            header("Location: index.php");
-            exit();
-        } else {
-            $error = "There was a problem submitting your job listing. Please try again.";
+                $category_id = $db->lastInsertId();
+            }
+
+            // Insert the new job listing
+            $posted_date = date('Y-m-d H:i:s');
+            $jobQuery = "INSERT INTO jobs (user_id, title, company, description, posted_date, location, status, category, url) 
+                         VALUES (:user_id, :title, :company, :description, :posted_date, :location, 'New', :category_id, :url)";
+            $jobStmt = $db->prepare($jobQuery);
+            $jobStmt->bindValue(':user_id', $user_id);
+            $jobStmt->bindValue(':title', $title);
+            $jobStmt->bindValue(':company', $company);
+            $jobStmt->bindValue(':description', $description);
+            $jobStmt->bindValue(':posted_date', $posted_date);
+            $jobStmt->bindValue(':location', $location);
+            $jobStmt->bindValue(':category_id', $category_id);
+            $jobStmt->bindValue(':url', $url);
+
+            if ($jobStmt->execute()) {
+                $db->commit();
+                header("Location: index.php");
+                exit();
+            } else {
+                $db->rollBack();
+                $error = "There was a problem submitting your job listing. Please try again.";
+            }
+        } catch (Exception $e) {
+            $db->rollBack();
+            $error = "An error occurred: " . $e->getMessage();
         }
     } else {
         $error = "All fields are required.";

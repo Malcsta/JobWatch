@@ -667,3 +667,23 @@ form input {
 .useroptions form {
     margin: 0; 
 }
+
+#posts_table a {
+    margin: 0;
+    text-align: center;
+    padding: 10px;
+}
+
+.sort {
+    margin: 0px;
+}
+
+.active-sort a {
+    color: green;
+    font-weight: bold;
+    text-decoration: none; /* Optional: To remove the underline */
+}
+
+#posts_table td {
+    padding: 5px;
+}

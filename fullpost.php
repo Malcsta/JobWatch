@@ -45,9 +45,11 @@ if (isset($_GET['id'])) {
     // Prepare the query to fetch the specific job posting
     $query = "
         SELECT jobs.job_id, jobs.url, jobs.title, jobs.company, jobs.description, jobs.posted_date, 
-               jobs.location, jobs.status, jobs.category, users.username
+               jobs.location, jobs.status, jobs.category, users.username, categories.category_name
         FROM jobs
         JOIN users ON jobs.user_id = users.user_id
+        JOIN categories ON jobs.category = categories.category_id
+
         WHERE jobs.job_id = :job_id
     ";
     $statement = $db->prepare($query);

@@ -5,9 +5,10 @@ require('connect.php');
 
 $query = "
     SELECT jobs.job_id, jobs.title, jobs.company, jobs.description, jobs.posted_date, 
-           jobs.location, jobs.status, jobs.category, users.username
+           jobs.location, jobs.status, jobs.category, users.username, categories.category_name
     FROM jobs
     JOIN users ON jobs.user_id = users.user_id
+    JOIN categories ON jobs.category = categories.category_id
     ORDER BY jobs.posted_date DESC
     LIMIT 10
 ";

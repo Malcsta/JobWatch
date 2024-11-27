@@ -16,7 +16,6 @@ if (isset($_SESSION['role_id']) && ($_SESSION['role_id'] == 2 || $_SESSION['role
         echo "Error: Unable to delete the post.";
     }
 }
-
 ?>
 
 <div class="listing_container">
@@ -43,7 +42,7 @@ if (isset($_SESSION['role_id']) && ($_SESSION['role_id'] == 2 || $_SESSION['role
     </div>
     <p class="company"><?= htmlspecialchars_decode($post['company']) ?></p>
     <p class="location"><?= htmlspecialchars_decode($post['location']) ?> <img id="locationimg" src="images/mapicon.png"></p>
-    <p><?= htmlspecialchars_decode($post['category']) ?></p>
+    <p><?= htmlspecialchars_decode($post['category_name']) ?></p>
     <p class="content"><?= nl2br(htmlspecialchars_decode($post['description'])) ?></p> <!-- Display the full description -->
     <p class="timestamp">Posted by <?= htmlspecialchars($post['username']) ?> on <?= htmlspecialchars_decode(date('F j, Y, g:i A', strtotime($post['posted_date']))) ?></p>
     <?php if (isset($_SESSION['role_id']) && ($_SESSION['role_id'] == 2 || $_SESSION['role_id'] == 3)): ?>
