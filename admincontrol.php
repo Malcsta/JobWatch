@@ -11,25 +11,21 @@ $statement->execute();
 
 $users = $statement->fetchAll(PDO::FETCH_ASSOC);
 
-// Fetch the sorting parameters from the URL, with defaults
 $sort_column = $_GET['column'] ?? 'title';
 $sort_order = $_GET['order'] ?? 'asc';
 
-// Sanitize input to prevent SQL injection
 $valid_columns = ['title', 'posted_date', 'updated_at'];
 $sort_column = in_array($sort_column, $valid_columns) ? $sort_column : 'title';
 $sort_order = ($sort_order === 'desc') ? 'desc' : 'asc';
 
-// Toggle the sort order for the next click
 $next_order = ($sort_order === 'asc') ? 'desc' : 'asc';
 
-// Fetch sorted data from the database
 $query = "SELECT job_id, user_id, title, company, posted_date, status, category FROM jobs 
           ORDER BY $sort_column $sort_order";
 $jobs = $db->query($query)->fetchAll(PDO::FETCH_ASSOC);
 
 if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
-    // Redirect to login page or display an error message
+
     header('Location: login.php');
     exit();
 }
@@ -40,13 +36,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['signup'])) {
     $password = $_POST['password'];
     $confirmPassword = $_POST['confirm_password'];
 
-    // Check if passwords match
     if ($password !== $confirmPassword) {
         $message = "<p id='signerror'>Passwords do not match!</p>";
     } else {
         $hashedPassword = password_hash($password, PASSWORD_BCRYPT);
 
-        // Check if username or email already exists
         $stmt = $db->prepare("SELECT * FROM users WHERE username = ? OR email = ?");
         $stmt->execute([$username, $email]);
         $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -54,7 +48,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['signup'])) {
         if (count($result) > 0) {
             $message = "<p id='signerror'>Username or email already taken!</p>";
         } else {
-            // Insert new user
             $stmt = $db->prepare("INSERT INTO users (username, password, email, role_id, is_blocked) VALUES (?, ?, ?, 1, 0)");
             if ($stmt->execute([$username, $hashedPassword, $email])) {
                 $_SESSION['signup_success'] = "Sign-up successful! You can now sign in.";
@@ -67,7 +60,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['signup'])) {
     }
 }
 
-// Determine which column the table is sorted by
+// Determine column
 $sort_column = isset($_GET['column']) ? $_GET['column'] : null;
 $sort_order = isset($_GET['order']) ? $_GET['order'] : null;
 

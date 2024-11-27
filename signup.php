@@ -5,33 +5,43 @@ require('connect.php');
 $message = ""; // Empty error message
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['signup'])) {
-    $username = $_POST['username'];
-    $email = $_POST['email'];
+    // Sanitize and validate inputs
+    $username = htmlspecialchars(trim($_POST['username'])); // Sanitizing username
+    $email = filter_var(trim($_POST['email']), FILTER_SANITIZE_EMAIL); // Sanitizing and validating email
     $password = $_POST['password'];
     $confirmPassword = $_POST['confirm_password'];
 
+    // Validate email format
+    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        $message = "<p id='signerror'>Invalid email format!</p>";
+    } 
     // Check if passwords match
-    if ($password !== $confirmPassword) {
+    else if ($password !== $confirmPassword) {
         $message = "<p id='signerror'>Passwords do not match!</p>";
     } else {
-        $hashedPassword = password_hash($password, PASSWORD_BCRYPT);
-
-        // Check if username or email already exists
-        $stmt = $db->prepare("SELECT * FROM users WHERE username = ? OR email = ?");
-        $stmt->execute([$username, $email]);
-        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-        if (count($result) > 0) {
-            $message = "<p id='signerror'>Username or email already taken!</p>";
+        // Password strength check (optional)
+        if (strlen($password) < 8) {
+            $message = "<p id='signerror'>Password should be at least 8 characters long.</p>";
         } else {
-            // Insert new user
-            $stmt = $db->prepare("INSERT INTO users (username, password, email, role_id, is_blocked) VALUES (?, ?, ?, 1, 0)");
-            if ($stmt->execute([$username, $hashedPassword, $email])) {
-                $_SESSION['signup_success'] = "Sign-up successful! You can now sign in.";
-                header("Location: index.php");
-                exit();
+            $hashedPassword = password_hash($password, PASSWORD_BCRYPT);
+
+            // Check if username or email already exists
+            $stmt = $db->prepare("SELECT * FROM users WHERE username = ? OR email = ?");
+            $stmt->execute([$username, $email]);
+            $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+            if (count($result) > 0) {
+                $message = "<p id='signerror'>Username or email already taken!</p>";
             } else {
-                $message = "<p id='signerror'>Error: " . htmlspecialchars($stmt->errorInfo()[2]) . "</p>";
+                // Insert new user
+                $stmt = $db->prepare("INSERT INTO users (username, password, email, role_id, is_blocked) VALUES (?, ?, ?, 1, 0)");
+                if ($stmt->execute([$username, $hashedPassword, $email])) {
+                    $_SESSION['signup_success'] = "Sign-up successful! You can now sign in.";
+                    header("Location: index.php");
+                    exit();
+                } else {
+                    $message = "<p id='signerror'>Error: " . htmlspecialchars($stmt->errorInfo()[2]) . "</p>";
+                }
             }
         }
     }
@@ -54,10 +64,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['signup'])) {
         <h2 id="info">Enter your information to get started:</h2>
         <form method="post" action="" id="userinfo">
             <div class="input_container">
-                <input class="signup" type="text" name="username" placeholder="Username" required>
+                <input class="signup" type="text" name="username" placeholder="Username" value="<?php echo isset($username) ? htmlspecialchars($username) : ''; ?>" required>
             </div>
             <div class="input_container">
-                <input class="signup" type="email" name="email" placeholder="Email" required>
+                <input class="signup" type="email" name="email" placeholder="Email" value="<?php echo isset($email) ? htmlspecialchars($email) : ''; ?>" required>
             </div>
             <div class="input_container">
                 <input class="signup" type="password" name="password" placeholder="Password" required>           

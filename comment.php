@@ -11,17 +11,17 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
 // Get the job_id from URL
 $job_id = isset($_GET['job_id']) ? $_GET['job_id'] : 0;
 
-// Check if user is logged in (session-based user validation)
+// Check if user is logged in 
 if (!isset($_SESSION['user_id'])) {
     echo "You need to log in to comment.";
     exit;
 }
 
-$user_id = $_SESSION['user_id'];  // The user who is posting the comment
-$captcha_error = ""; // Initialize captcha error message
-$comment_text = "";  // Initialize comment text to retain user input
+$user_id = $_SESSION['user_id'];  
+$captcha_error = ""; 
+$comment_text = "";  
 
-// Generate a random CAPTCHA
+// Generate  CAPTCHA
 function generateCaptcha() {
     $characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
     $captcha_string = '';
@@ -30,7 +30,7 @@ function generateCaptcha() {
     }
     $_SESSION['captcha'] = $captcha_string;  // Store the CAPTCHA in session
 
-    // Create the CAPTCHA image
+    // CAPTCHA image
     $image = imagecreate(120, 40);
     $bg_color = imagecolorallocate($image, 255, 255, 255);
     $text_color = imagecolorallocate($image, 0, 0, 0);  
@@ -42,7 +42,7 @@ function generateCaptcha() {
     }
     imagestring($image, 5, 30, 10, $captcha_string, $text_color);
 
-    // Output the image to the browser
+    // Output the image 
     header('Content-Type: image/png');
     imagepng($image);
     imagedestroy($image);
@@ -61,7 +61,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['comment_field'], $_PO
     if ($_POST['captcha_input'] !== $_SESSION['captcha']) {
         $captcha_error = "Incorrect CAPTCHA. Please try again."; // Set error message
     } else {
-        // Ensure that the comment text isn't empty
         if (!empty($comment_text)) {
             // Prepare the query to insert the comment
             $stmt = $db->prepare("INSERT INTO comments (user_id, job_id, comment_text, comment_date) VALUES (?, ?, ?, NOW())");
@@ -77,7 +76,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['comment_field'], $_PO
 }
 ?>
 
-<!-- Comment submission form -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -95,12 +93,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['comment_field'], $_PO
                     <input type="text" name="comment_field" id="comment_field" required placeholder="Enter your comment" value="<?= htmlspecialchars($comment_text) ?>">
                 </div>
                 
-                <!-- CAPTCHA -->
                 <div class="captcha-container">
                     <img src="comment.php?captcha=1" alt="CAPTCHA" id="captcha_image">
                     <input type="text" name="captcha_input" id="captcha_input" required placeholder="Enter CAPTCHA">
                     
-                    <!-- Display CAPTCHA error if it exists -->
                     <?php if (!empty($captcha_error)) : ?>
                         <p id="captcha_error" style="color:red;"><?= $captcha_error ?></p>
                     <?php endif; ?>

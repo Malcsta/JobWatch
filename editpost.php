@@ -14,7 +14,7 @@ if (!isset($_SESSION['role_id']) || ($_SESSION['role_id'] != 2 && $_SESSION['rol
     exit;
 }
 
-// Check if the job_id is set and fetch the post details
+// Check if the job id is set and fetch the post details
 if (isset($_GET['id'])) {
     $job_id = $_GET['id'];
 
@@ -33,7 +33,7 @@ if (isset($_GET['id'])) {
     exit;
 }
 
-// Handle form submission to update the post
+// Handling form submission to update the post
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $title = $_POST['title'];
     $company = $_POST['company'];

@@ -687,3 +687,17 @@ form input {
 #posts_table td {
     padding: 5px;
 }
+
+#filter {
+    display: flex;
+    margin-left: 10px;
+}
+
+#filter select {
+    height: 30px;
+    font-size: 20px;
+}
+
+.btn {
+    margin-left: 10px;
+}

@@ -7,7 +7,7 @@ window.addEventListener('beforeunload', () => {
     localStorage.setItem('scrollPosition', window.scrollY);
 });
 
-// Restore after page reload
+// Restore scroll after page reload
 window.addEventListener('load', () => {
     const scrollPosition = localStorage.getItem('scrollPosition');
     if (scrollPosition) {

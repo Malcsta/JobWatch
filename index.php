@@ -3,18 +3,25 @@
 session_start();
 require('connect.php');
 
+$selectedCategory = filter_input(INPUT_GET, 'category', FILTER_VALIDATE_INT);
 $query = "
     SELECT jobs.job_id, jobs.title, jobs.company, jobs.description, jobs.posted_date, 
            jobs.location, jobs.status, jobs.category, users.username, categories.category_name
     FROM jobs
     JOIN users ON jobs.user_id = users.user_id
     JOIN categories ON jobs.category = categories.category_id
-    ORDER BY jobs.posted_date DESC
-    LIMIT 10
 ";
+if ($selectedCategory) {
+    $query .= " WHERE jobs.category = :selectedCategory";
+}
+$query .= " ORDER BY jobs.posted_date DESC LIMIT 10";
 $statement = $db->prepare($query);
-$statement->execute();
 
+if ($selectedCategory) {
+    $statement->bindValue(':selectedCategory', $selectedCategory, PDO::PARAM_INT);
+}
+
+$statement->execute();
 $postings = $statement->fetchAll(PDO::FETCH_ASSOC);
 
 $lastUpdatedQuery = "SELECT MAX(posted_date) AS last_updated FROM jobs";
@@ -44,6 +51,15 @@ $commentCountMap = [];
 foreach ($commentCounts as $comment) {
     $commentCountMap[$comment['job_id']] = $comment['comment_count'];
 }
+
+// Query to get categories
+$categoriesQuery = "SELECT category_id, category_name FROM categories";
+$categoriesStatement = $db->prepare($categoriesQuery);
+$categoriesStatement->execute();
+$categories = $categoriesStatement->fetchAll(PDO::FETCH_ASSOC);
+
+
+
 ?>
 
 <!DOCTYPE html>
@@ -70,6 +86,19 @@ foreach ($commentCounts as $comment) {
         <div id="listings">
             <p class="title">New Jobs in your area</p>
             <p class="updated">Last updated: <?= htmlspecialchars($formattedLastUpdatedDate) ?></p>
+            <div id="filter">
+                <form method="GET" action="index.php">
+                    <select name="category" id="category" onchange="this.form.submit()">
+                        <option value="">All Categories</option>
+                        <?php foreach ($categories as $category): ?>
+                            <option value="<?= htmlspecialchars($category['category_id']) ?>" 
+                                <?= $selectedCategory == $category['category_id'] ? 'selected' : '' ?>>
+                                <?= htmlspecialchars($category['category_name']) ?>
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
+                </form>
+            </div>
         <?php foreach ($postings as $post): ?>
             <?php include 'listing.php'; ?>
         <?php endforeach; ?>
